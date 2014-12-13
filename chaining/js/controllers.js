@@ -2,15 +2,31 @@
 	'use strict';
 
 	function Calculator(start){
-		var total = start || 0;
+		if (this instanceof Calculator) {
+			var _total = start || 0;
+			this.add = function(x) { _total += x; return this;}
+			this.sub = function(x) { _total -= x; return this;}
+			this.mul = function(x) { _total *= x; return this;}
+			this.div = function(x) { _total /= x; return this;}
 
-		this.add = function(x) { total += x; return this;}
-		this.sub = function(x) { total -= x; return this;}
-		this.mul = function(x) { total *= x; return this;}
-		this.div = function(x) { total /= x; return this;}
+			Object.defineProperty(this, "Total", {get: function () {
+				return _total;
+			},
+				set: function (newValue) {
+					_total = newValue;
 
-		this.get = function() { return total; }
+				},
+				enumerable: false,
+				configurable: true});
+
+		}
+		else {
+			return new Calculator();
+		}
+
 	}
+
+
 
 	var controllerId = "mainCtrl";
 
@@ -31,7 +47,7 @@
 		vm.process = function(){
 			var calculator = new Calculator(5).add(2).mul(5).sub(7);
 
-			vm.result = calculator.get();
+			vm.result = calculator.Total;
 		}
 	}
 }());

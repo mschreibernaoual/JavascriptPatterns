@@ -2,51 +2,63 @@
 	'use strict';
 
 	var Product = function(name, price, discount, sale_price){
-		var self = this;
+		if (this instanceof Product) {
+			this.accept = function(visitor){
+				visitor.visit(this);
+			};
 
-		this.accept = function(visitor){
-			visitor.visit(self);
-		};
+			this.setDiscount = function(dis){
+				discount = dis;
+			};
 
-		this.getName = function(){
-			return name;
-		};
 
-		this.getPrice = function(){
-			return price;
-		}
+			this.getDiscount = function(){
+				return discount;
+			};
 
-		this.setDiscount = function(dis){
-			discount = dis;
-		};
-
-		this.getDiscount = function(){
-			return discount;
-		};
-
-		this.getDiscountPercentStr = function(){
-			if(discount){
-				return (discount * 100) + "%";
+			this.getDiscountPercentStr = function(){
+				if(discount){
+					return (discount * 100) + "%";
+				}
 			}
+
+			this.getDiscountAmount = function(){
+				if(discount){
+					return (price * this.getDiscount()).toFixed(2);
+				}
+			}
+
+			this.getSalePrice = function(){
+				if(discount){
+					return (price * (1 - this.getDiscount())).toFixed(2);
+				}
+			}
+			this.getName = function(){
+				return name;
+			};
+
+			this.getPrice = function(){
+				return price;
+			}
+
+		}
+		else {
+			return new Product(name,price,discount, sale_price);
 		}
 
-		this.getDiscountAmount = function(){
-			if(discount){
-				return (price * self.getDiscount()).toFixed(2);
-			}
-		}
 
-		this.getSalePrice = function(){
-			if(discount){
-				return (price * (1 - self.getDiscount())).toFixed(2);
-			}
-		}
 	}
 
 	var Discount = function(){
-		this.visit = function(prod){
-			prod.setDiscount(0.10);
+		if(this instanceof Discount) {
+			this.visit = function (prod) {
+				prod.setDiscount(0.10);
+			}
 		}
+		else {
+			return new Discount();
+		}
+
 	}
 
 	var controllerId = "mainCtrl";

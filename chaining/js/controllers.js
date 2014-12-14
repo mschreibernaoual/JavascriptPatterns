@@ -21,7 +21,7 @@
 
 		}
 		else {
-			return new Calculator();
+			return new Calculator(start);
 		}
 
 	}
